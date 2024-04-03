@@ -1,7 +1,15 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
+<h1>Test</h1>
+<button class="btn btn-primary" @onclick="(() => showWeather=!showWeather)">Show weather:</button>
+@if (showWeather)
+{
+    <Weather />
+}
 
-<h1>STIN semestrální projekt Gerö</h1>
 
-Welcome to your new app.
+@code {
+    bool showWeather { get; set; } = false;
+}
