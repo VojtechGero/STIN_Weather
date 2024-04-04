@@ -1,15 +1,49 @@
 ﻿@page "/"
+@using STIN_Weather.Data
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<button class="btn btn-primary" @onclick="(() => showWeather=!showWeather)">Show weather:</button>
+<input @onchange="recordLongitude"/> 
+<br />
+<input @onchange="recordLatitude" />
+<br />
+<button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
 @if (showWeather)
 {
-    <Weather />
+    <p>longitude: @Coords.longitude</p>
+    <p>latitude: @Coords.latitude</p>
+    <WeatherRespose />
 }
 
-
-@code {
+@code{
     bool showWeather { get; set; } = false;
+    Coordinates Coords { get; set; }
+    string longitude, latitude;
+    void recordLongitude(ChangeEventArgs e)
+    {
+        longitude = (string) e.Value;
+    }
+    void recordLatitude(ChangeEventArgs e)
+    {
+        latitude = (string)e.Value;
+    }
+    void showWeatherClick()
+    {
+        Coords = new Coordinates(getCoord(latitude), getCoord(longitude));
+        showWeather = true;
+    }
+    double? getCoord(string text)
+    {
+        if (text.Contains(","))
+        {
+            text = text.Replace(',', '.');
+        }
+        if (double.TryParse(text, out double d))
+        {
+            return d;
+        }
+        return null;
+    }
+
 }
