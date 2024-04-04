@@ -1,8 +1,8 @@
-﻿namespace STIN_Weather.Data
+﻿namespace STIN_Weather.WeatherReportUtils
 {
     public class Coordinates
     {
-        public double? latitude {  get; set; }
+        public double? latitude { get; set; }
         public double? longitude { get; set; }
         public Coordinates(double? latitude, double? longitude)
         {

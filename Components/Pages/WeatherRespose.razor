@@ -1,10 +1,16 @@
-﻿@using STIN_Weather.Data
+﻿@using STIN_Weather.WeatherReportUtils
+
 <h3>WeatherRespose</h3>
 
 <p>returned json: </p>
 
 
-@code{
+@code
+{
+    [Parameter]
+    public Coordinates c {get; set;}
+    WeatherReport w { get; set; }
+    WeatherApi api { get; set; }
     protected override async Task OnInitializedAsync()
     {
         api = new WeatherApi();
@@ -12,10 +18,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        weather = await Weather.requestWeather(c, api);
+        w = await WeatherReport.requestWeather(c, api);
     }
-    WeatherApi api;
-    Weather weather;
-    [Parameter]
-    public Coordinates c {get; set;}
 }

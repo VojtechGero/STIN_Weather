@@ -1,4 +1,4 @@
-﻿namespace STIN_Weather.Data
+﻿namespace STIN_Weather.WeatherReportUtils
 {
     public class WeatherApi
     {
@@ -15,7 +15,7 @@
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
-             
+
         }
     }
 }
