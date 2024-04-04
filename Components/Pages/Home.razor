@@ -1,15 +1,41 @@
 ﻿@page "/"
+@using STIN_Weather.WeatherReportUtils
 @rendermode InteractiveServer
-
+@using LeafletForBlazor
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<button class="btn btn-primary" @onclick="(() => showWeather=!showWeather)">Show weather:</button>
+<RealTimeMap height="460px" width="620px" OnClickMap="onClickMap" Parameters="@parameters"></RealTimeMap>
+<button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
 @if (showWeather)
 {
-    <Weather />
+    <WeatherRespose c
+    ="Coords"/>
 }
 
-
-@code {
+@code{
+    //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
+    Coordinates Coords { get; set; }
+    //liberec
+    double latitude { get; set; } = 15.066667;
+    double longitude { get; set; } = 50.766667;
+    RealTimeMap? realTimeMap;   //reference to map control
+    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()  //general map settings
+        {
+            location = new RealTimeMap.Location()
+            {
+                latitude = 50.766667,
+                longitude = 15.066667,
+            }
+        };
+    void onClickMap(RealTimeMap.ClicksMapArgs value)
+    {
+        latitude=value.location.latitude;
+        longitude=value.location.longitude;
+    }
+    void showWeatherClick()
+    {
+        Coords = new Coordinates(latitude, longitude);
+        showWeather = true;
+    }
 }
