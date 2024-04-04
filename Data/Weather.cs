@@ -1,18 +1,16 @@
-﻿namespace STIN_Weather.Data
+﻿namespace STIN_Weather.Data;
+public class Weather
 {
-    public class Weather
+    public string json {  get; set; }
+
+    async Weather(double latitude,double longitude, WeatherApi w)
     {
-        public string json {  get; set; }
+        json=w.GetAsync()
+    }
 
-        Weather(double latitude, double longitude)
-        {
-
-        }
-
-        public Weather requestWeather(double? latitude, double? longitude)
-        {
-            if (latitude is null or longitude is null) return null;
-            return new Weather(latitude, longitude);
-        }
+    public async Weather requestWeather(Coordinates c,WeatherApi w)
+    {
+        if (c.latitude is null or c.longitude is null) return null;
+        return await new Weather(c.latitude, c.longitude, WeatherApi w);
     }
 }

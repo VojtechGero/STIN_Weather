@@ -2,14 +2,15 @@
 {
     public class WeatherApi
     {
-        private static HttpClient sharedClient = new()
+        private HttpClient client = new()
         {
             BaseAddress = new Uri("https://api.open-meteo.com/v1/forecast"),
         };
 
-        static async Task<string> GetAsync(HttpClient httpClient)
+        public async Task<string> GetAsync(double latitude, double longitude)
         {
-            using HttpResponseMessage response = await httpClient.GetAsync("");
+            string request = $"latitude={latitude}&longitude={longitude}";
+            using HttpResponseMessage response = await client.GetAsync(request);
 
             response.EnsureSuccessStatusCode();
 

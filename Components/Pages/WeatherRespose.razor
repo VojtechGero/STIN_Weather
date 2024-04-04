@@ -1,12 +1,21 @@
-﻿<h3>WeatherRespose</h3>
+﻿@using STIN_Weather.Data
+<h3>WeatherRespose</h3>
 
 <p>returned json: </p>
 
 
 @code{
-    Weather w;
+    protected override async Task OnInitializedAsync()
+    {
+        api = new WeatherApi();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        weather = await Weather.requestWeather(c, api);
+    }
+    WeatherApi api;
+    Weather weather;
     [Parameter]
-    public double latitude { get; set; }
-    [Parameter]
-    public double longitude { get; set; }
+    public Coordinates c {get; set;}
 }
