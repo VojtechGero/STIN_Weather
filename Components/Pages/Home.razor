@@ -1,49 +1,41 @@
 ﻿@page "/"
-@    using STIN_Weather.Data
+@using STIN_Weather.WeatherReportUtils
 @rendermode InteractiveServer
-
+@using LeafletForBlazor
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<input @onchange="recordLongitude"/> 
-<br />
-<input @onchange="recordLatitude" />
-<br />
+<RealTimeMap height="460px" width="620px" OnClickMap="onClickMap" Parameters="@parameters"></RealTimeMap>
 <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
 @if (showWeather)
 {
-    <p>longitude: @Coords.longitude</p>
-    <p>latitude: @Coords.latitude</p>
-    <WeatherRespose />
+    <WeatherRespose c
+    ="Coords"/>
 }
 
 @code{
+    //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
     Coordinates Coords { get; set; }
-    string longitude, latitude;
-    void recordLongitude(ChangeEventArgs e)
+    //liberec
+    double latitude { get; set; } = 15.066667;
+    double longitude { get; set; } = 50.766667;
+    RealTimeMap? realTimeMap;   //reference to map control
+    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()  //general map settings
+        {
+            location = new RealTimeMap.Location()
+            {
+                latitude = 50.766667,
+                longitude = 15.066667,
+            }
+        };
+    void onClickMap(RealTimeMap.ClicksMapArgs value)
     {
-        longitude = (string) e.Value;
-    }
-    void recordLatitude(ChangeEventArgs e)
-    {
-        latitude = (string)e.Value;
+        latitude=value.location.latitude;
+        longitude=value.location.longitude;
     }
     void showWeatherClick()
     {
-        Coords = new Coordinates(getCoord(latitude), getCoord(longitude));
+        Coords = new Coordinates(latitude, longitude);
         showWeather = true;
     }
-    double? getCoord(string text)
-    {
-        if (text.Contains(","))
-        {
-            text = text.Replace(',', '.');
-        }
-        if (double.TryParse(text, out double d))
-        {
-            return d;
-        }
-        return null;
-    }
-
 }

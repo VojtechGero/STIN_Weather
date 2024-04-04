@@ -9,7 +9,7 @@
 
         public async Task<string> GetAsync(double latitude, double longitude)
         {
-            string request = $"latitude={latitude}&longitude={longitude}";
+            string request = $"?latitude={latitude}&longitude={longitude}";
             using HttpResponseMessage response = await client.GetAsync(request);
 
             response.EnsureSuccessStatusCode();
