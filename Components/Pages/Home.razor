@@ -1,11 +1,19 @@
 ﻿@page "/"
 @using STIN_Weather.WeatherReportUtils
-@rendermode InteractiveServer
+@using STIN_Weather.Data
 @using LeafletForBlazor
+@rendermode InteractiveServer
+
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<RealTimeMap height="460px" width="620px" OnClickMap="onClickMap" Parameters="@parameters"></RealTimeMap>
-<button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
+<RealTimeMap 
+    height="460px" 
+    width="620px" 
+    OnClickMap="onClickMap" 
+    OnAfterMapLoaded="onLoadControl" 
+    Parameters="@parameters"
+></RealTimeMap>
+<button class="btn btn-primary" @onclick="showWeatherClick" >Show weather:</button>
 @if (showWeather)
 {
     <WeatherRespose c
@@ -17,21 +25,60 @@
     bool showWeather { get; set; } = false;
     Coordinates Coords { get; set; }
     //liberec
-    double latitude { get; set; } = 15.066667;
-    double longitude { get; set; } = 50.766667;
-    RealTimeMap? realTimeMap;   //reference to map control
-    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()  //general map settings
+    double longitude { get; set; } = 15.066667;
+    double latitude { get; set; } = 50.766667;
+    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
         {
             location = new RealTimeMap.Location()
             {
-                latitude = 50.766667,
                 longitude = 15.066667,
+                latitude = 50.766667,
+            },
+            zoom_level = 5,
+            basemap = new RealTimeMap.Basemap()
+            {
+                basemap_layers = new List<RealTimeMap.BasemapConfigLayer>
+                {
+                        new RealTimeMap.BasemapConfigLayer()
+                        {
+                            url = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png",
+                            attribution = "©Stadia",
+                            title = "Terrain",
+                            detect_retina = true
+                        },
+                        new RealTimeMap.BasemapConfigLayer()
+                        {
+                            url = "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}.png",
+                            attribution = "©Stadia",
+                            title = "Satellite"
+                        },
+                        new RealTimeMap.BasemapConfigLayer()
+                        {
+                            url = "https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
+                            attribution = "©Thunderforest",
+                            title = "Metal"
+                        }
+                }
             }
         };
-    void onClickMap(RealTimeMap.ClicksMapArgs value)
+    RealTimeMap.PointSymbol symbol = new RealTimeMap.PointSymbol()
+        {
+            color = "red",
+            fillColor = "yellow",
+            radius = 10,
+            weight = 3,
+            opacity = 1,
+            fillOpacity = 1
+        };
+    public async Task onLoadControl(RealTimeMap.MapEventArgs value)
+    {
+        await value.sender.movePoint([latitude, longitude], symbol);
+    }
+    async Task onClickMap(RealTimeMap.ClicksMapArgs value)
     {
         latitude=value.location.latitude;
         longitude=value.location.longitude;
+        await value.sender.movePoint([latitude, longitude], symbol);
     }
     void showWeatherClick()
     {
