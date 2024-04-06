@@ -1,9 +1,35 @@
 ﻿@using STIN_Weather.WeatherReportUtils
-
+@using STIN_Weather.Data
 <h3>WeatherRespose</h3>
-@if(w is not null)
+
+<p>Longitude: @c.longitude Latitude: @c.latitude</p>
+@if (data is not null)
 {
-    <p>returned json: @w.json</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Max Temp. (C)</th>
+                <th>Precipitation sum</th>
+                <th>Weather Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < data.daily.time.Length;i++)
+            {
+                <tr>
+                    <td>@data.daily.time[i]</td>
+                    <td>@data.daily.temperature_2m_max[i]</td>
+                    <td>@data.daily.precipitation_sum[i]</td>
+                    <td>@WeatherUtils.ParseCode(data.daily.weather_code[i])</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (error)
+{
+    <p>No data for chosen coordinates</p>
 }
 
 
@@ -11,16 +37,33 @@
 {
     [Parameter]
     public Coordinates c {get; set;}
-    WeatherData w { get; set; }
+    WeatherData? data { get; set; }
     WeatherApi api { get; set; }
+    RequestBuilder builder;
+    bool error = false;
     protected override async Task OnInitializedAsync()
     {
         api = new WeatherApi();
     }
-
     protected override async Task OnParametersSetAsync()
     {
-        w = await WeatherData.requestWeather(c, api);
-        await base.OnParametersSetAsync();
+        builder = new RequestBuilder(c);
+        builder.DailyWeatherCode();
+        builder.DailyTemperatureMax();
+        builder.DailyPrecipitationSum();
+        try
+        {
+            data = await api.requestWeather(builder.GetRequest());
+            error = false;
+        }
+        catch (HttpRequestException)
+        {
+            data = null;
+            error = true;
+        }
+        finally
+        {
+            await base.OnParametersSetAsync();
+        }
     }
 }
