@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "STIN_Weather", "STIN_Weather.csproj", "{787EB707-D3B3-47E4-85F4-6A1CD9CB812D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "..\test\test.csproj", "{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "..\test\test.csproj", "{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,7 +18,6 @@ Global
 		{787EB707-D3B3-47E4-85F4-6A1CD9CB812D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{787EB707-D3B3-47E4-85F4-6A1CD9CB812D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76C2430E-BD50-499F-AA5B-4029D3CC7E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
