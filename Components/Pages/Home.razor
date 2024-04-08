@@ -13,7 +13,13 @@
     OnAfterMapLoaded="onLoadControl" 
     Parameters="@parameters"
 ></RealTimeMap>
-<button class="btn btn-primary" @onclick="showWeatherClick" >Show weather:</button>
+<div class="buttons">
+    <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
+    <AuthorizeView>
+        <button class="btn btn-primary" >Save location</button>
+    </AuthorizeView>
+</div>
+
 @if (showWeather)
 {
     <WeatherRespose c
@@ -46,12 +52,14 @@
                             title = "Terrain",
                             detect_retina = true
                         },
+                        /*
                         new RealTimeMap.BasemapConfigLayer()
                         {
                             url = "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}.png",
                             attribution = "©Stadia",
                             title = "Satellite"
                         },
+                        */
                         new RealTimeMap.BasemapConfigLayer()
                         {
                             url = "https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
