@@ -2,7 +2,12 @@
 @using STIN_Weather.WeatherReportUtils
 @using STIN_Weather.Data
 @using LeafletForBlazor
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject JsonFileUserStore users
 @rendermode InteractiveServer
+
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
@@ -18,29 +23,64 @@
         
     </AuthorizeView>
 </div>
-@if (saved)
+@if (locations.Any())
 {
-    <p>@message</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var loc in locations)
+            {
+                <tr>
+                    <td>@loc.id</td>
+                    <td>@loc.name</td>
+                    <td>@loc.latitude</td>
+                    <td>@loc.longitude</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-
 @if (showWeather)
 {
     <WeatherRespose c="OutgoingCoords" />
 }
 
+
+
 @code{
     //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
-    bool saved { get; set; } = false;
     Coordinates OutgoingCoords { get; set; }
     Coordinates Coords { get; set; }
-    string message="";
+    ApplicationUser user;
+    List<SavedLocation> locations = new List<SavedLocation>();
     string text = "";
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = await UserManager.GetUserAsync(authState.User);
+        await base.OnInitializedAsync();
+    }
     async Task SaveLocationClick()
     {
-        var x = new SavedLocation(Coords,text);
-        message = $"Saved location {text} at coords:{Coords.latitude} {Coords.longitude}";
-        saved = true;
+        
+        if (user.savedLocations is null)
+        {
+            user.savedLocations = new List<SavedLocation>();
+        }
+        int id = user.savedLocations.Count + 1;
+        var newLocation = new SavedLocation(Coords, text, id);
+        user.savedLocations.Add(newLocation);
+        locations = user.savedLocations;
+        var cancellationToken = new CancellationToken();
+        users.UpdateAsync(user, cancellationToken);
     }
     async Task OnCoordinatesCreated(Coordinates IncomingCoords)
     {
