@@ -8,23 +8,7 @@ public class Coordinates
     {
         
         this.latitude = latitude;
-        this.longitude = formatLongitude(longitude);
-    }
-
-    private double formatLongitude(double value)
-    {
-        bool neg=value<0;
-        double newValue = Math.Abs(value);
-        while (newValue > 180)
-        {
-            newValue -= 360;
-        }
-        if (neg)
-        {
-            return -newValue;
-        }
-        return newValue;
-        
+        this.longitude = longitude;
     }
 
     public double[] toArray()

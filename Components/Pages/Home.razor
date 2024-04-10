@@ -6,91 +6,53 @@
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<RealTimeMap 
-    height="460px" 
-    width="620px" 
-    OnClickMap="onClickMap" 
-    OnAfterMapLoaded="onLoadControl" 
-    Parameters="@parameters"
-></RealTimeMap>
+<MapView OnCoordinatesCreated="OnCoordinatesCreated" />
 <div class="buttons">
     <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
     <AuthorizeView>
-        <button class="btn btn-primary" >Save location</button>
+        <div>
+        <button class="btn btn-primary" @onclick="SaveLocationClick">Save location</button>
+            <label>Name:</label>
+            <input @bind="@text" @oninput="OnTextChanged" />
+        </div>
+        
     </AuthorizeView>
 </div>
+@if (saved)
+{
+    <p>@message</p>
+}
 
 @if (showWeather)
 {
-    <WeatherRespose c
-    ="Coords"/>
+    <WeatherRespose c="OutgoingCoords" />
 }
 
 @code{
     //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
+    bool saved { get; set; } = false;
+    Coordinates OutgoingCoords { get; set; }
     Coordinates Coords { get; set; }
-    //liberec
-    double longitude { get; set; } = 15.066667;
-    double latitude { get; set; } = 50.766667;
-    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
-        {
-            location = new RealTimeMap.Location()
-            {
-                longitude = 15.066667,
-                latitude = 50.766667,
-            },
-            zoom_level = 5,
-            basemap = new RealTimeMap.Basemap()
-            {
-                basemap_layers = new List<RealTimeMap.BasemapConfigLayer>
-                {
-                        new RealTimeMap.BasemapConfigLayer()
-                        {
-                            url = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png",
-                            attribution = "©Stadia",
-                            title = "Terrain",
-                            detect_retina = true
-                        },
-                        /*
-                        new RealTimeMap.BasemapConfigLayer()
-                        {
-                            url = "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}.png",
-                            attribution = "©Stadia",
-                            title = "Satellite"
-                        },
-                        */
-                        new RealTimeMap.BasemapConfigLayer()
-                        {
-                            url = "https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
-                            attribution = "©Thunderforest",
-                            title = "Metal"
-                        }
-                }
-            }
-        };
-    RealTimeMap.PointSymbol symbol = new RealTimeMap.PointSymbol()
-        {
-            color = "red",
-            fillColor = "yellow",
-            radius = 10,
-            weight = 3,
-            opacity = 1,
-            fillOpacity = 1
-        };
-    public async Task onLoadControl(RealTimeMap.MapEventArgs value)
+    string message="";
+    string text = "";
+    async Task SaveLocationClick()
     {
-        await value.sender.movePoint([latitude, longitude], symbol);
+        var x = new SavedLocation(Coords,text);
+        message = $"Saved location {text} at coords:{Coords.latitude} {Coords.longitude}";
+        saved = true;
     }
-    async Task onClickMap(RealTimeMap.ClicksMapArgs value)
+    async Task OnCoordinatesCreated(Coordinates IncomingCoords)
     {
-        latitude=value.location.latitude;
-        longitude=value.location.longitude;
-        await value.sender.movePoint([latitude, longitude], symbol);
+        Coords = IncomingCoords;
+    }
+    void OnTextChanged(ChangeEventArgs e)
+    {
+        text = e.Value.ToString();
     }
     void showWeatherClick()
     {
-        Coords = new Coordinates(latitude, longitude);
+        OutgoingCoords = Coords;
         showWeather = true;
     }
 }
