@@ -86,6 +86,12 @@
     {
         Coords = IncomingCoords;
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = await UserManager.GetUserAsync(authState.User);
+        await base.OnParametersSetAsync();
+    }
     void showWeatherClick()
     {
         OutgoingCoords = Coords;

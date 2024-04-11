@@ -20,8 +20,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-})
-    .AddIdentityCookies();
+}).AddIdentityCookies();
 
 // Replace EF Core with your own custom JSON file provider
 builder.Services.AddScoped<IUserStore<ApplicationUser>, JsonFileUserStore>();

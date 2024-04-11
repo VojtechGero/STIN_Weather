@@ -1,4 +1,6 @@
-﻿namespace STIN_Weather.Data
+﻿using System.Text.Json.Serialization;
+
+namespace STIN_Weather.Data
 {
     public class SavedLocation
     {
@@ -6,7 +8,8 @@
         public double longitude { get; set; }
         public string name { get; set; }
         public int id { get; set; }
-
+        [JsonConstructor]
+        public SavedLocation() { }
         public SavedLocation(Coordinates coords, string name,int id)
         {
             this.latitude = coords.latitude;
