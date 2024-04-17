@@ -7,14 +7,17 @@
     width="620px" 
     OnClickMap="onClickMap" 
     OnAfterMapLoaded="onLoadControl" 
+    @ref ="map"
     Parameters="@parameters"
 ></RealTimeMap>
 
 @code {
     [Parameter]
     public EventCallback<Coordinates> OnCoordinatesCreated { get; set; }
-    public double longitude { get; set; } = 15.066667;
-    public double latitude { get; set; } = 50.766667;
+
+    private double longitude { get; set; } = 15.07;
+    private double latitude { get; set; } = 50.77;
+    RealTimeMap map;
     RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
         {
             location = new RealTimeMap.Location()
@@ -71,7 +74,10 @@
         var Coords = new Coordinates(latitude, formatLongitude(longitude));
         await OnCoordinatesCreated.InvokeAsync(Coords);
     }
-
+    public async Task MovePoint(Coordinates coords)
+    {
+        await map.movePoint(coords.toArray(), symbol);
+    }
     private double formatLongitude(double value)
     {
         bool neg = value < 0;

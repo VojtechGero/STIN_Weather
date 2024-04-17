@@ -2,11 +2,18 @@
 @using STIN_Weather.WeatherReportUtils
 @using STIN_Weather.Data
 @using LeafletForBlazor
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject JsonFileUserStore users
 @rendermode InteractiveServer
+
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<MapView OnCoordinatesCreated="OnCoordinatesCreated" />
+<MapView 
+    OnCoordinatesCreated="OnCoordinatesCreated" 
+    @ref="map"/>
 <div class="buttons">
     <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
     <AuthorizeView>
@@ -18,37 +25,82 @@
         
     </AuthorizeView>
 </div>
-@if (saved)
+@if (locations.Any())
 {
-    <p>@message</p>
+    <LocationsTable 
+        OnRemoveLocation="RemoveLocation"
+        OnShowLocation="ShowLocation"
+        locations="locations"/>
 }
-
 @if (showWeather)
 {
     <WeatherRespose c="OutgoingCoords" />
 }
 
 @code{
-    //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
-    bool saved { get; set; } = false;
     Coordinates OutgoingCoords { get; set; }
     Coordinates Coords { get; set; }
-    string message="";
+    ApplicationUser user;
+    List<SavedLocation> locations = new List<SavedLocation>();
+    MapView map;
     string text = "";
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = await UserManager.GetUserAsync(authState.User);
+        if(user is not null)
+        {
+            locations = user.savedLocations;
+        }
+        await base.OnInitializedAsync();
+    }
     async Task SaveLocationClick()
     {
-        var x = new SavedLocation(Coords,text);
-        message = $"Saved location {text} at coords:{Coords.latitude} {Coords.longitude}";
-        saved = true;
+
+        if (user.savedLocations is null)
+        {
+            user.savedLocations = new List<SavedLocation>();
+        }
+        int id = locations.Count + 1;
+        var newLocation = new SavedLocation(Coords, text, id);
+        user.savedLocations.Add(newLocation);
+        locations = user.savedLocations;
+        var cancellationToken = new CancellationToken();
+        users.UpdateAsync(user, cancellationToken);
     }
     async Task OnCoordinatesCreated(Coordinates IncomingCoords)
     {
         Coords = IncomingCoords;
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = await UserManager.GetUserAsync(authState.User);
+        if(user is not null)
+        {
+            locations = user.savedLocations;
+        }
+        await base.OnParametersSetAsync();
+    }
     void showWeatherClick()
     {
         OutgoingCoords = Coords;
         showWeather = true;
+    }
+    private async Task RemoveLocation(int id)
+    {
+        locations.RemoveAt(id - 1);
+        for (int i = id-1; i < locations.Count; i++)
+        {
+            locations[i].id = i+1;
+        }
+        user.savedLocations = locations;
+        var cancellationToken = new CancellationToken();
+        users.UpdateAsync(user, cancellationToken);
+    }
+    private async Task ShowLocation(Coordinates coords)
+    {
+        map.MovePoint(coords);
     }
 }
