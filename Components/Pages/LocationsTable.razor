@@ -1,0 +1,44 @@
+﻿@using STIN_Weather.Data
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Remove</th>
+            <th>Show</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loc in locations)
+        {
+            <tr>
+                <td>@loc.id</td>
+                <td>@loc.name</td>
+                <td>@loc.latitude</td>
+                <td>@loc.longitude</td>
+                <td><button class="btn table-btn" @onclick="(args)=>RemoveLocation(args,loc.id)">Remove</button></td>
+                <td><button class="btn table-btn" @onclick="(args)=>ShowLocation(args,loc)">Show</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<SavedLocation> locations { get; set; }
+    [Parameter]
+    public EventCallback<int> OnRemoveLocation { get; set; }
+    [Parameter]
+    public EventCallback<Coordinates> OnShowLocation { get; set; }
+    private async Task RemoveLocation(MouseEventArgs e, int id)
+    {
+        await OnRemoveLocation.InvokeAsync(id);
+    }
+    private async Task ShowLocation(MouseEventArgs e, SavedLocation location)
+    {
+        var coords = new Coordinates(location.latitude, location.longitude);
+        await OnShowLocation.InvokeAsync(coords);
+    }
+}

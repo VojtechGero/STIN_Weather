@@ -11,7 +11,9 @@
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<MapView OnCoordinatesCreated="OnCoordinatesCreated" />
+<MapView 
+    OnCoordinatesCreated="OnCoordinatesCreated" 
+    @ref="map"/>
 <div class="buttons">
     <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
     <AuthorizeView>
@@ -25,57 +27,42 @@
 </div>
 @if (locations.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var loc in locations)
-            {
-                <tr>
-                    <td>@loc.id</td>
-                    <td>@loc.name</td>
-                    <td>@loc.latitude</td>
-                    <td>@loc.longitude</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <LocationsTable 
+        OnRemoveLocation="RemoveLocation"
+        OnShowLocation="ShowLocation"
+        locations="locations"/>
 }
 @if (showWeather)
 {
     <WeatherRespose c="OutgoingCoords" />
 }
 
-
-
 @code{
-    //https://github.com/ichim/LeafletForBlazor-NuGet
     bool showWeather { get; set; } = false;
     Coordinates OutgoingCoords { get; set; }
     Coordinates Coords { get; set; }
     ApplicationUser user;
     List<SavedLocation> locations = new List<SavedLocation>();
+    MapView map;
     string text = "";
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         user = await UserManager.GetUserAsync(authState.User);
+        if(user is not null)
+        {
+            locations = user.savedLocations;
+        }
         await base.OnInitializedAsync();
     }
     async Task SaveLocationClick()
     {
-        
+
         if (user.savedLocations is null)
         {
             user.savedLocations = new List<SavedLocation>();
         }
-        int id = user.savedLocations.Count + 1;
+        int id = locations.Count + 1;
         var newLocation = new SavedLocation(Coords, text, id);
         user.savedLocations.Add(newLocation);
         locations = user.savedLocations;
@@ -90,11 +77,30 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         user = await UserManager.GetUserAsync(authState.User);
+        if(user is not null)
+        {
+            locations = user.savedLocations;
+        }
         await base.OnParametersSetAsync();
     }
     void showWeatherClick()
     {
         OutgoingCoords = Coords;
         showWeather = true;
+    }
+    private async Task RemoveLocation(int id)
+    {
+        locations.RemoveAt(id - 1);
+        for (int i = id-1; i < locations.Count; i++)
+        {
+            locations[i].id = i+1;
+        }
+        user.savedLocations = locations;
+        var cancellationToken = new CancellationToken();
+        users.UpdateAsync(user, cancellationToken);
+    }
+    private async Task ShowLocation(Coordinates coords)
+    {
+        map.MovePoint(coords);
     }
 }
