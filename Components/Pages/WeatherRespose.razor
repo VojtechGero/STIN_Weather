@@ -55,7 +55,6 @@
             .HistoricDays(historic);
         try
         {
-            Console.WriteLine(builder.GetRequest());
             data = await api.requestWeather(builder.GetRequest());
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
             foreach (var d in data.daily.time)

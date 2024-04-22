@@ -50,7 +50,7 @@ public static class WeatherUtils
             95 => "Thunderstorm",
             96 => "Thunderstorm with slight hail",
             99 => "Thunderstorm with heavy hail",
-            _ => ""
+            _ => "Unknown"
         };
     }
 }
