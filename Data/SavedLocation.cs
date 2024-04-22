@@ -14,10 +14,7 @@ namespace STIN_Weather.Data
         {
             this.latitude = coords.latitude;
             this.longitude = coords.longitude;
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                this.name = $"Location {id}";
-            }else this.name = name;
+            this.name = name;
 
             this.id = id;
         }

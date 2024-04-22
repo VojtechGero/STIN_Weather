@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(options =>
 // Replace EF Core with your own custom JSON file provider
 builder.Services.AddScoped<IUserStore<ApplicationUser>, JsonFileUserStore>();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddUserStore<JsonFileUserStore>()
     .AddSignInManager()
     .AddDefaultTokenProviders();

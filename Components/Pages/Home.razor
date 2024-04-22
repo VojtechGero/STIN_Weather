@@ -11,30 +11,39 @@
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<MapView 
-    OnCoordinatesCreated="OnCoordinatesCreated" 
-    @ref="map"/>
-<div class="buttons">
-    <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
-    <AuthorizeView>
-        <div>
-        <button class="btn btn-primary" @onclick="SaveLocationClick">Save location</button>
-            <label>Name:</label>
-            <input @bind="@text" />
-        </div>
+<div class="maplocs">
+    <div>
+        <MapView 
+            OnCoordinatesCreated="OnCoordinatesCreated" 
+            @ref="map"/>
+    </div>
+    <div>
+        <div class="buttons">
+            <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
+            <AuthorizeView>
+                <div>
+                <button class="btn btn-primary" @onclick="SaveLocationClick">Save location</button>
+                    <label>Name:</label>
+                    <input @bind="@text" />
+                </div>
         
-    </AuthorizeView>
+            </AuthorizeView>
+            @if (locations.Any())
+            {
+                    <LocationsTable OnRemoveLocation="RemoveLocation"
+                                    OnShowLocation="ShowLocation"
+                                    locations="locations" />
+            }
+        </div>
+    </div>
 </div>
-@if (locations.Any())
-{
-    <LocationsTable 
-        OnRemoveLocation="RemoveLocation"
-        OnShowLocation="ShowLocation"
-        locations="locations"/>
-}
+
 @if (showWeather)
 {
-    <WeatherRespose c="OutgoingCoords" />
+    <div>
+        <hr />
+        <WeatherRespose c="OutgoingCoords" />
+    </div>
 }
 
 @code{
@@ -63,7 +72,13 @@
             user.savedLocations = new List<SavedLocation>();
         }
         int id = locations.Count + 1;
-        var newLocation = new SavedLocation(Coords, text, id);
+        string name = text;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "New location";
+        }
+        name = WeatherUtils.GetUniqueName(name, locations);
+        var newLocation = new SavedLocation(Coords, name, id);
         user.savedLocations.Add(newLocation);
         locations = user.savedLocations;
         var cancellationToken = new CancellationToken();
