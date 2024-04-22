@@ -59,9 +59,9 @@ h1:focus {
     border-color: #929292;
 }
 
-.buttons{
-    display: flex;
-    flex-wrap:wrap;
+.controls-table {
+    margin-left: 1rem;
+    width: 50%;
 }
 
 .maplocs {
@@ -71,6 +71,17 @@ h1:focus {
     gap: 5px;
     justify-content: flex-start;
 }
-.table {
-    width: 90%;
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+}
+.location-name {
+    margin-right: 1rem;
+}
+.check {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
