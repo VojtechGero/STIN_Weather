@@ -11,35 +11,57 @@
 
 <PageTitle>Home</PageTitle>
 <h1>Test</h1>
-<MapView 
-    OnCoordinatesCreated="OnCoordinatesCreated" 
-    @ref="map"/>
-<div class="buttons">
-    <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
-    <AuthorizeView>
-        <div>
-        <button class="btn btn-primary" @onclick="SaveLocationClick">Save location</button>
-            <label>Name:</label>
-            <input @bind="@text" />
+<h1>@user</h1>
+<div class="maplocs">
+    <div>
+        <MapView 
+            OnCoordinatesCreated="OnCoordinatesCreated" 
+            @ref="map"/>
+    </div>
+    <div class="controls-table">
+        <div class="controls">
+            <div>
+                <button class="btn btn-primary" @onclick="showWeatherClick">Show weather:</button>
+            </div>
+            <div class="location-name">
+                <AuthorizeView>
+                    <button class="btn btn-primary" @onclick="SaveLocationClick">Save location</button>
+                    <label class="form-label" for="locName">Name:</label>
+                    <input @bind="@text" id="locName"/>
+                </AuthorizeView>
+            </div>
+            <div class="check">
+                <div>
+                    <AuthorizeView>
+                        <label class="form-check-label" for="historic" >Historic data:</label>
+                        <input type="checkbox" id="historic" class="form-check-input" @bind="@historicData">
+                    </AuthorizeView>
+                </div>
+            </div>
+            
         </div>
-        
-    </AuthorizeView>
+        @if (locations.Any())
+        {
+            <LocationsTable OnRemoveLocation="RemoveLocation"
+                            OnShowLocation="ShowLocation"
+                            locations="locations" />
+        }
+    </div>
 </div>
-@if (locations.Any())
-{
-    <LocationsTable 
-        OnRemoveLocation="RemoveLocation"
-        OnShowLocation="ShowLocation"
-        locations="locations"/>
-}
+
 @if (showWeather)
 {
-    <WeatherRespose c="OutgoingCoords" />
+    <div>
+        <hr />
+        <WeatherRespose c="OutgoingCoords" historic="historic"/>
+    </div>
 }
 
 @code{
+    bool historicData = false;
     bool showWeather { get; set; } = false;
     Coordinates OutgoingCoords { get; set; }
+    int historic = 0;
     Coordinates Coords { get; set; }
     ApplicationUser user;
     List<SavedLocation> locations = new List<SavedLocation>();
@@ -63,7 +85,13 @@
             user.savedLocations = new List<SavedLocation>();
         }
         int id = locations.Count + 1;
-        var newLocation = new SavedLocation(Coords, text, id);
+        string name = text;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "New location";
+        }
+        name = WeatherUtils.GetUniqueName(name, locations);
+        var newLocation = new SavedLocation(Coords, name, id);
         user.savedLocations.Add(newLocation);
         locations = user.savedLocations;
         var cancellationToken = new CancellationToken();
@@ -86,6 +114,11 @@
     void showWeatherClick()
     {
         OutgoingCoords = Coords;
+        if (historicData)
+        {
+            historic = 7;
+        }
+        else historic = 0;
         showWeather = true;
     }
     private async Task RemoveLocation(int id)
@@ -102,5 +135,6 @@
     private async Task ShowLocation(Coordinates coords)
     {
         map.MovePoint(coords);
+        this.Coords = coords;
     }
 }

@@ -103,6 +103,7 @@
 
 .nav-scrollable {
     display: none;
+    width:100%;
 }
 
 .navbar-toggler:checked ~ .nav-scrollable {

@@ -10,9 +10,9 @@ a, .btn-link {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
-    margin-right: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem
+    margin-top:1rem;
+    margin-right:1rem;
+    margin-bottom:1rem;
 }
 
 .table-btn {
@@ -59,7 +59,29 @@ h1:focus {
     border-color: #929292;
 }
 
-.buttons{
+.controls-table {
+    margin-left: 1rem;
+    width: 50%;
+}
+
+.maplocs {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
+    flex-grow: 0;
+    gap: 5px;
+    justify-content: flex-start;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+}
+.location-name {
+    margin-right: 1rem;
+}
+.check {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

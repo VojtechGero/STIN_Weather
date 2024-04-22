@@ -1,14 +1,12 @@
 ﻿@using STIN_Weather.WeatherReportUtils
 @using STIN_Weather.Data
-<h3>WeatherRespose</h3>
 
-<p>Longitude: @c.longitude Latitude: @c.latitude</p>
 @if (data is not null)
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Time</th>
+                <th>Date</th>
                 <th>Max Temp. (C)</th>
                 <th>Precipitation sum</th>
                 <th>Weather Code</th>
@@ -18,7 +16,7 @@
             @for (int i = 0; i < data.daily.time.Length;i++)
             {
                 <tr>
-                    <td>@data.daily.time[i]</td>
+                    <td>@dates[i]</td>
                     <td>@data.daily.temperature_2m_max[i]</td>
                     <td>@data.daily.precipitation_sum[i]</td>
                     <td>@WeatherUtils.ParseCode(data.daily.weather_code[i])</td>
@@ -37,23 +35,39 @@
 {
     [Parameter]
     public Coordinates c {get; set;}
+    [Parameter]
+    public int historic { get; set; } = 0;
     WeatherData? data { get; set; }
     WeatherApi api { get; set; }
     RequestBuilder builder;
     bool error = false;
+    List<string> dates=new List<string>();
     protected override async Task OnInitializedAsync()
     {
         api = new WeatherApi();
     }
     protected override async Task OnParametersSetAsync()
     {
-        builder = new RequestBuilder(c);
-        builder.DailyWeatherCode();
-        builder.DailyTemperatureMax();
-        builder.DailyPrecipitationSum();
+        builder = new RequestBuilder(c)
+            .DailyWeatherCode()
+            .DailyTemperatureMax()
+            .DailyPrecipitationSum()
+            .HistoricDays(historic);
         try
         {
+            Console.WriteLine(builder.GetRequest());
             data = await api.requestWeather(builder.GetRequest());
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+            foreach (var d in data.daily.time)
+            {
+                DateOnly date = DateOnly.Parse(d);
+                string s = $"{date} ({date.DayOfWeek.ToString().Substring(0,3)})";
+                if (date == today)
+                {
+                    s += " (Today)";
+                }
+                dates.Add(s);
+            }
             error = false;
         }
         catch (HttpRequestException)
