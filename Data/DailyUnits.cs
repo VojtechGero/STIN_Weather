@@ -1,4 +1,4 @@
-﻿namespace STIN_Weather.WeatherReportUtils
+﻿namespace STIN_Weather.Data
 {
     public class DailyUnits
     {

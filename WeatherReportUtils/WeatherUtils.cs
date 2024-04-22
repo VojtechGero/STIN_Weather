@@ -1,7 +1,23 @@
-﻿namespace STIN_Weather.WeatherReportUtils;
+﻿using STIN_Weather.Data;
+
+namespace STIN_Weather.WeatherReportUtils;
 
 public static class WeatherUtils
 {
+    public static string GetUniqueName(string name,List<SavedLocation> locations)
+    {
+        int d = 0;
+        var names=locations.Select(x => x.name).ToList();
+        while (true)
+        {
+            if (!names.Contains(name)&&d==0) break;
+            d++;
+            if (!names.Contains(name + $"({d})")) break;
+
+        }
+        if (d > 0) return name + $"({d})";
+        return name;
+    }
     public static string ParseCode(int weatherCode)
     {
         return weatherCode switch
