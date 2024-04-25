@@ -135,7 +135,7 @@
     private async Task ShowLocation(Coordinates coords)
     {
         map.MovePoint(coords);
-        OutgoingCoords = Coords;
+        OutgoingCoords = coords;
         if (historicData)
         {
             historic = 7;
