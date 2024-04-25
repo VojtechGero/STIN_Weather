@@ -47,9 +47,4 @@ jobs:
         publish-profile: ${{ secrets.STINWeather_567B }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Remove users.json file
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --settings WEBSITE_RUN_FROM_PACKAGE=0
-          az webapp run-command invoke --command "rm /home/site/wwwroot/users.json" --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }}
-          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --settings WEBSITE_RUN_FROM_PACKAGE=1
+      run: rm ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/users.json
