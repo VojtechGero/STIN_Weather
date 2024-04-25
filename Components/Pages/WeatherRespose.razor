@@ -13,13 +13,13 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < data.daily.time.Length;i++)
+            @for (int i = 0; i < data.Count;i++)
             {
                 <tr>
                     <td>@dates[i]</td>
-                    <td>@data.daily.temperature_2m_max[i]</td>
-                    <td>@data.daily.precipitation_sum[i]</td>
-                    <td>@WeatherUtils.ParseCode(data.daily.weather_code[i])</td>
+                    <td>@data[i].temperatureMax</td>
+                    <td>@data[i].precipitationSum</td>
+                    <td>@data[i].description</td>
                 </tr>
             }
         </tbody>
@@ -37,7 +37,7 @@
     public Coordinates c {get; set;}
     [Parameter]
     public int historic { get; set; } = 0;
-    WeatherData? data { get; set; }
+    List<DailyForecast> data { get; set; }
     WeatherApi api { get; set; }
     RequestBuilder builder;
     bool error = false;
@@ -57,11 +57,10 @@
         {
             data = await api.requestWeather(builder.GetRequest());
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-            foreach (var d in data.daily.time)
+            foreach (var i in data.Select(x=>x.date).ToList())
             {
-                DateOnly date = DateOnly.Parse(d);
-                string s = $"{date} ({date.DayOfWeek.ToString().Substring(0,3)})";
-                if (date == today)
+                string s = $"{i} ({i.DayOfWeek.ToString().Substring(0,3)})";
+                if (i == today)
                 {
                     s += " (Today)";
                 }

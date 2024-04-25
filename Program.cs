@@ -15,7 +15,6 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<JsonFileUserStore>();
-builder.Services.AddScoped<LocationSelectionService>();
 
 builder.Services.AddAuthentication(options =>
 {

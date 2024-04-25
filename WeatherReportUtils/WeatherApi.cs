@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using STIN_Weather.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace STIN_Weather.WeatherReportUtils;
 
@@ -18,13 +19,22 @@ public class WeatherApi
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<WeatherData> requestWeather(string request)
+    public async Task<List<DailyForecast>> requestWeather(string request)
     {
         try
         {
             string json = await GetAsync(request);
             var we = JsonSerializer.Deserialize<WeatherData>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-            return we;
+            List<DailyForecast> Forecast = new List<DailyForecast>();
+            var daily = we.daily;
+            for (int i = 0; i < daily.time.Length; i++)
+            {
+                DateOnly date = DateOnly.FromDateTime(DateTime.Parse(daily.time[i]));
+                string description = WeatherUtils.ParseCode(daily.weather_code[i]);
+                Forecast.Add(new DailyForecast(description, date,
+                    daily.temperature_2m_max[i], daily.precipitation_sum[i]));
+            }
+            return Forecast;
         }
         catch(HttpRequestException)
         {
