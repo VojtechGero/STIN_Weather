@@ -135,6 +135,12 @@
     private async Task ShowLocation(Coordinates coords)
     {
         map.MovePoint(coords);
-        this.Coords = coords;
+        OutgoingCoords = Coords;
+        if (historicData)
+        {
+            historic = 7;
+        }
+        else historic = 0;
+        showWeather = true;
     }
 }
