@@ -46,5 +46,3 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.STINWeather_567B }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Remove users.json file
-      run: rm ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/users.json
