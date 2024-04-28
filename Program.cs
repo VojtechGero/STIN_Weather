@@ -28,6 +28,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddUserStore<JsonFileUserStore>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 5;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+});
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 builder.Services.AddControllers();
