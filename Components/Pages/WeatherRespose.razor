@@ -51,8 +51,12 @@
         builder = new RequestBuilder(c)
             .DailyWeatherCode()
             .DailyTemperatureMax()
-            .DailyPrecipitationSum()
-            .HistoricDays(historic);
+            .DailyPrecipitationSum();
+        if (historic > 0)
+        {
+            builder.HistoricDays(historic);
+        }
+        
         try
         {
             data = await api.requestWeather(builder.GetRequest());
