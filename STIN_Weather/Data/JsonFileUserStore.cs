@@ -30,7 +30,7 @@ public class JsonFileUserStore : IUserStore<ApplicationUser>, IUserPasswordStore
     public Task SetPasswordHashAsync(ApplicationUser user, string passwordHash, CancellationToken cancellationToken)
     {
         var existingUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (existingUser == null)
         {
             existingUser = user;
         }
@@ -105,43 +105,31 @@ public class JsonFileUserStore : IUserStore<ApplicationUser>, IUserPasswordStore
     public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
     {
         var SelectedUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (SelectedUser == null)
         {
             SelectedUser = user;
         }
-        if (SelectedUser != null)
-        {
-            SelectedUser.NormalizedUserName = normalizedName;
-            SaveChanges();
-            var test=_users;
-            return Task.CompletedTask;
-        }
-        throw new ArgumentException();
+        SelectedUser.NormalizedUserName = normalizedName;
+        SaveChanges();
+        var test=_users;
+        return Task.CompletedTask;
     }
 
     public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
     {
         var SelectedUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (SelectedUser == null)
         {
             SelectedUser = user;
         }
-        if (SelectedUser != null)
-        {
-            SelectedUser.UserName = userName;
-            SaveChanges();
-            return Task.CompletedTask;
-        }
-        throw new ArgumentException();
+        SelectedUser.UserName = userName;
+        SaveChanges();
+        return Task.CompletedTask;
     }
 
     public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         var existingUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
-        {
-            existingUser = user;
-        }
         if (existingUser != null)
         {
             _users.Remove(existingUser);
@@ -154,17 +142,13 @@ public class JsonFileUserStore : IUserStore<ApplicationUser>, IUserPasswordStore
     public Task SetEmailAsync(ApplicationUser user, string email, CancellationToken cancellationToken)
     {
         var existingUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (existingUser == null)
         {
             existingUser = user;
         }
-        if (existingUser != null)
-        {
-            existingUser.Email = email;
-            SaveChanges();
-            return Task.CompletedTask;
-        }
-        throw new ArgumentException();
+        existingUser.Email = email;
+        SaveChanges();
+        return Task.CompletedTask;
     }
 
     public Task<string> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -180,17 +164,13 @@ public class JsonFileUserStore : IUserStore<ApplicationUser>, IUserPasswordStore
     public Task SetEmailConfirmedAsync(ApplicationUser user, bool confirmed, CancellationToken cancellationToken)
     {
         var existingUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (existingUser == null)
         {
             existingUser = user;
         }
-        if (existingUser != null)
-        {
-            existingUser.EmailConfirmed = confirmed;
-            SaveChanges();
-            return Task.CompletedTask;
-        }
-        throw new ArgumentException();
+        existingUser.EmailConfirmed = confirmed;
+        SaveChanges();
+        return Task.CompletedTask;
     }
 
     public Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
@@ -206,17 +186,13 @@ public class JsonFileUserStore : IUserStore<ApplicationUser>, IUserPasswordStore
     public Task SetNormalizedEmailAsync(ApplicationUser user, string normalizedEmail, CancellationToken cancellationToken)
     {
         var existingUser = _users.FirstOrDefault(u => u.Id == user.Id);
-        if (!_users.Any())
+        if (existingUser == null)
         {
             existingUser = user;
         }
-        if (existingUser != null)
-        {
-            existingUser.NormalizedEmail = normalizedEmail;
-            SaveChanges();
-            return Task.CompletedTask;
-        }
-        throw new ArgumentException();
+        existingUser.NormalizedEmail = normalizedEmail;
+        SaveChanges();
+        return Task.CompletedTask;
     }
     private void SaveChanges()
     {
