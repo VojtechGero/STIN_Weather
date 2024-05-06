@@ -7,7 +7,7 @@ public class RequestBuilder
     private string request;
     public RequestBuilder(Coordinates coords)
     {
-        request = $"?latitude={coords.latitude}&longitude={coords.longitude}";
+        request = $"?latitude={coords.Latitude}&longitude={coords.Longitude}";
     }
     public RequestBuilder DailyTemperatureMax()
     {

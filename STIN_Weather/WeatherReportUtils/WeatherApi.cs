@@ -1,7 +1,5 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using STIN_Weather.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace STIN_Weather.WeatherReportUtils;
 
@@ -19,7 +17,7 @@ public class WeatherApi
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<List<DailyForecast>> requestWeather(string request)
+    public async virtual Task<List<DailyForecast>> requestWeather(string request)
     {
         try
         {

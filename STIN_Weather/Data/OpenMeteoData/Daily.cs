@@ -1,4 +1,4 @@
-﻿namespace STIN_Weather.Data;
+﻿namespace STIN_Weather.Data.OpenMeteoData;
 
 public class Daily
 {

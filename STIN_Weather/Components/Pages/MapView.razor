@@ -18,50 +18,22 @@
     private double longitude { get; set; } = 15.07;
     private double latitude { get; set; } = 50.77;
     RealTimeMap map;
-    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
-        {
-            location = new RealTimeMap.Location()
-            {
-                //liberec
-                longitude = 15.07,
-                latitude = 50.77,
-            },
-            zoom_level = 5,
-            basemap = new RealTimeMap.Basemap()
-            {
-                basemap_layers = new List<RealTimeMap.BasemapConfigLayer>
-                {
-                        new RealTimeMap.BasemapConfigLayer()
-                        {
-                            url = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png",
-                            attribution = "©Stadia",
-                            title = "Terrain",
-                            detect_retina = true
-                        },
-                        new RealTimeMap.BasemapConfigLayer()
-                        {
-                            url = "https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png",
-                            attribution = "©Thunderforest",
-                            title = "Metal"
-                        }
-                }
-            }
-        };
-    RealTimeMap.PointSymbol symbol = new RealTimeMap.PointSymbol()
-        {
-            color = "red",
-            fillColor = "yellow",
-            radius = 10,
-            weight = 3,
-            opacity = 1,
-            fillOpacity = 1
-        };
+    RealTimeMap.PointSymbol symbol = null;
+    RealTimeMap.LoadParameters parameters = null;
     public async Task onLoadControl(RealTimeMap.MapEventArgs value)
     {
         await value.sender.movePoint([latitude, longitude], symbol);
     }
     protected override async Task OnInitializedAsync()
     {
+        if(symbol is null)
+        {
+            symbol = MapUtils.GetSymbol();
+        }
+        if(parameters is null)
+        {
+            parameters = MapUtils.GetParameters();
+        }
         var Coords = new Coordinates(latitude, longitude);
         await OnCoordinatesCreated.InvokeAsync(Coords);
         await base.OnInitializedAsync();
@@ -70,24 +42,13 @@
     {
         latitude = value.location.latitude;
         longitude = value.location.longitude;
-        await value.sender.movePoint([latitude, longitude], symbol);
-        var Coords = new Coordinates(latitude, formatLongitude(longitude));
+        var Coords = new Coordinates(latitude, MapUtils.formatLongitude(longitude));
+        await value.sender.movePoint(Coords.toArray(), symbol);
         await OnCoordinatesCreated.InvokeAsync(Coords);
     }
     public async Task MovePoint(Coordinates coords)
     {
         await map.movePoint(coords.toArray(), symbol);
     }
-    private double formatLongitude(double value)
-    {
-        bool neg = value < 0;
-        double absVal = Math.Abs(value);
-        int overReach = (int)(absVal / 180);
-        double newValue = absVal - (overReach * 360);
-        if (neg)
-        {
-            return -newValue;
-        }
-        return newValue;
-    }
+    
 }

@@ -9,15 +9,11 @@ public class LocationSelectionService
     List<SavedLocation> SavedLocations { get; set; }
     private readonly UserManager<ApplicationUser> UserManager;
     
-    private LocationSelectionService(List<SavedLocation> savedLocations)
+    public LocationSelectionService(ApplicationUser user)
     {
-        this.SavedLocations = savedLocations;
+        SavedLocations = user.savedLocations;
     }
 
-    public static async Task<LocationSelectionService> BuildLocationSelectionService(ApplicationUser user)
-    {
-        return new LocationSelectionService(user.savedLocations);
-    }
 
     public async Task<string> FromId(int id,bool historic)
     {
@@ -30,7 +26,7 @@ public class LocationSelectionService
 
         if (!ids.Contains(id))
         {
-            throw new ArgumentException("Selected ID does not corespond to any location");
+            throw new ArgumentException("Selected ID does not correspond to any location");
         }
 
         var location = SavedLocations[id - 1];
