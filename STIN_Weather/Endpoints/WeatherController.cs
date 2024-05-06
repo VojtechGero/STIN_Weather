@@ -27,7 +27,7 @@ public class WeatherController : ControllerBase
         try
         {
             var applicationUser = await _userManager.FindByIdAsync(userId);
-            var _LocationSelectionService = await LocationSelectionService.BuildLocationSelectionService(applicationUser);
+            var _LocationSelectionService = new LocationSelectionService(applicationUser);
             string response = await _LocationSelectionService.FromId(id, historic);
             return Content(response);
         }

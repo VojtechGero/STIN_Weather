@@ -1,6 +1,5 @@
 ﻿@using STIN_Weather.WeatherReportUtils
 @using STIN_Weather.Data
-
 @if (data is not null)
 {
     <table class="table">
@@ -42,34 +41,18 @@
     RequestBuilder builder;
     bool error = false;
     List<string> dates=new List<string>();
+
+
+
     protected override async Task OnInitializedAsync()
     {
         api = new WeatherApi();
     }
     protected override async Task OnParametersSetAsync()
     {
-        builder = new RequestBuilder(c)
-            .DailyWeatherCode()
-            .DailyTemperatureMax()
-            .DailyPrecipitationSum();
-        if (historic > 0)
-        {
-            builder.HistoricDays(historic);
-        }
-        
         try
         {
-            data = await api.requestWeather(builder.GetRequest());
-            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-            foreach (var i in data.Select(x=>x.date).ToList())
-            {
-                string s = $"{i} ({i.DayOfWeek.ToString().Substring(0,3)})";
-                if (i == today)
-                {
-                    s += " (Today)";
-                }
-                dates.Add(s);
-            }
+            (data, dates) = await WeatherUtils.CallApi(api, c, historic);
             error = false;
         }
         catch (HttpRequestException)

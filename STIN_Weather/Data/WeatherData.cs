@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using STIN_Weather.Data.OpenMeteoData;
 
 namespace STIN_Weather.Data;
 

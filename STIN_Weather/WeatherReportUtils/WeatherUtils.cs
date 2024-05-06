@@ -1,4 +1,6 @@
-﻿using STIN_Weather.Data;
+﻿using STIN_Weather.Components;
+using STIN_Weather.Components.Pages;
+using STIN_Weather.Data;
 
 namespace STIN_Weather.WeatherReportUtils;
 
@@ -18,6 +20,49 @@ public static class WeatherUtils
         if (d > 0) return name + $"({d})";
         return name;
     }
+
+    private static string formatDate(DateOnly date, DateOnly today)
+    {
+        var s = $"{date} ({date.DayOfWeek.ToString().Substring(0, 3)})";
+        if (date == today)
+        {
+            s += " (Today)";
+        }
+        return s;
+    }
+
+    public static async Task<(List<DailyForecast> data, List<string> dates)> CallApi (WeatherApi api, Coordinates c,int historic)
+    {
+        var builder = new RequestBuilder(c)
+            .DailyWeatherCode()
+            .DailyTemperatureMax()
+            .DailyPrecipitationSum();
+        if (historic > 0)
+        {
+            builder.HistoricDays(historic);
+        }
+        var dates = new List<string>();
+        var data = await api.requestWeather(builder.GetRequest());
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        foreach (var i in data.Select(x => x.date))
+        {
+            string s = formatDate(i, today);
+            dates.Add(s);
+        }
+        return (data, dates);
+    }
+
+    public static (Coordinates,int,bool) ShowWeatherTable(Coordinates coords,bool useHistoric)
+    {
+        int historic;
+        if (useHistoric)
+        {
+            historic = 7;
+        }
+        else historic = 0;
+        return (coords, historic,true);
+    }
+
     public static string ParseCode(int weatherCode)
     {
         return weatherCode switch
@@ -39,7 +84,7 @@ public static class WeatherUtils
             66 => "Light freezing Rain",
             67 => "Heavy Freezing Rain",
             71 => "Slight snow fall",
-            73 => "Mmoderate snow fall",
+            73 => "Moderate snow fall",
             75 => "Heavy snow fall",
             77 => "Snow grains",
             80 => "Slight rain showers",

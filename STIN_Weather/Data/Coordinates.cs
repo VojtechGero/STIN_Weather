@@ -2,16 +2,16 @@
 
 public class Coordinates
 {
-    public double latitude { get; set; }
-    public double longitude { get; set; }
-    public Coordinates(double latitude, double longitude)
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public Coordinates(double Latitude, double Longitude)
     {
-        if(!IsValidCoords(longitude, latitude))
+        if(!IsValidCoords(Longitude, Latitude))
         {
             throw new ArgumentOutOfRangeException("Invalid coordinates");
         }
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.Latitude = Latitude;
+        this.Longitude = Longitude;
     }
     private bool IsValidCoords(double longitude, double latitude)
     {
@@ -27,6 +27,6 @@ public class Coordinates
     }
     public double[] toArray()
     {
-        return [latitude, longitude];
+        return [Latitude, Longitude];
     }
 }
