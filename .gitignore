@@ -362,5 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /users.json
-/users.json
+/STIN_Weather/users.json
 /STIN_Weather/users.json
