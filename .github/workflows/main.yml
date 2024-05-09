@@ -1,0 +1,2 @@
+- name: ReportGenerator
+  uses: danielpalme/ReportGenerator-GitHub-Action@5.2.5
