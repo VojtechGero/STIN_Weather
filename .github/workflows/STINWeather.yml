@@ -1,47 +1,40 @@
-name: .NET
+name: Code Coverage
 
 on:
   push:
-    branches:
-    - master
+    branches: master
+  pull_request:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        .NET: [8.0, latest]  # Adjust .NET versions as needed
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '8.0' # Replace this with your .NET version
+      - uses: actions/checkout@v3
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.NET }}
 
-    - name: Build
-      run: dotnet build --no-restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Test with coverage
-      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Install ReportGenerator
-      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      - name: Run tests with coverage
+        run: dotnet test tests/MyProject.Tests/**/*.cs --no-build --collect="XPlat Code Coverage" -v diag -- **/bin/Release/netcoreapp**.*.dll
 
-    - name: Generate Coverage Report
-      run: reportgenerator "-reports:./**/TestResults/Coverage/*.xml" "-targetdir:./TestResults/CoverageReport" -reporttypes:Html
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}  # Replace with your Codecov token
+          files: ./coverage/*.xml  # Adjust path if needed
+          flags: ${{ matrix.NET }}  # Include .NET version in coverage report
 
-    - name: Upload coverage to GitHub Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage-report
-        path: ./TestResults/CoverageReport/
-
-    # Optional: Upload to Codecov or Coveralls
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4.0.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./TestResults/Coverage/*.xml
-        fail_ci_if_error: true
-
+      - name: Calculate code coverage summary (optional)
+        run: dotnet report coverage -summary
