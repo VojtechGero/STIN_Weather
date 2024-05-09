@@ -1,1 +1,47 @@
+name: .NET
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0' # Replace this with your .NET version
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test with coverage
+      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
+
+    - name: Install ReportGenerator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    - name: Generate Coverage Report
+      run: reportgenerator "-reports:./**/TestResults/Coverage/*.xml" "-targetdir:./TestResults/CoverageReport" -reporttypes:Html
+
+    - name: Upload coverage to GitHub Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ./TestResults/CoverageReport/
+
+    # Optional: Upload to Codecov or Coveralls
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./**/TestResults/Coverage/*.xml
+        fail_ci_if_error: true
 
