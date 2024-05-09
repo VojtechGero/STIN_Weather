@@ -1,0 +1,31 @@
+name: deploy slop
+on:
+  push:
+    branches:
+    - master
+env:
+  DOTNET_VERSION: '8.0.201'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies, Build and Test
+      run: dotnet restore
+    - name: Build
+      run: dotnet build
+    - name: Test
+      run: |
+            dotnet test --collect: "XPlat Code Coverage"
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        Token: ${{ secrets.CODECOV_TOKEN }}
