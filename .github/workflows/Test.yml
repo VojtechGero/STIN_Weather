@@ -1,4 +1,4 @@
-name: deploy slop
+name: code coverage
 on:
   push:
     branches:
@@ -24,7 +24,7 @@ jobs:
       run: dotnet build
     - name: Test
       run: |
-            dotnet test --collect: "XPlat Code Coverage"
+            dotnet test --collect: "XPlat Code Coverage" --settings coverlet.runsettings
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
