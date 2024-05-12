@@ -119,6 +119,55 @@ public class MockLessTest
         // Assert
         Assert.AreEqual(expected, result);
     }
+
+    [TestMethod]
+    public void RemoveLocation_EmptyList_ReturnsEmptyList()
+    {
+        // Arrange
+        var locations = new List<SavedLocation>();
+
+        // Act
+        var result = WeatherUtils.removeLocation(1, locations);
+
+        // Assert
+        Assert.AreEqual(0, result.Count);
+    }
+
+    [TestMethod]
+    public void RemoveLocation_SingleItem_ReturnsEmptyList()
+    {
+        // Arrange
+        var location = new SavedLocation(new Coordinates(10.0, 20.0), "Location 1", 1);
+        var locations = new List<SavedLocation> { location };
+
+        // Act
+        var result = WeatherUtils.removeLocation(1, locations);
+
+        // Assert
+        Assert.AreEqual(0, result.Count);
+    }
+
+    [TestMethod]
+    public void RemoveLocation_MultipleItems_RemovesCorrectItem()
+    {
+        // Arrange
+        var location1 = new SavedLocation(new Coordinates(10.0, 20.0), "Location 1", 1);
+        var location2 = new SavedLocation(new Coordinates(30.0, 40.0), "Location 2", 2);
+        var location3 = new SavedLocation(new Coordinates(50.0, 60.0), "Location 3", 3);
+        var locations = new List<SavedLocation> { location1, location2, location3 };
+
+        // Act
+        var result = WeatherUtils.removeLocation(2, locations);
+
+        // Assert
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(1, result[0].id);
+        Assert.AreEqual(2, result[1].id);
+        Assert.AreEqual("Location 1", result[0].name);
+        Assert.AreEqual("Location 3", result[1].name);
+    }
+
+
     [TestMethod]
     public void GetUniqueName_ReturnsOriginalName_WhenNameDoesNotExist()
     {
