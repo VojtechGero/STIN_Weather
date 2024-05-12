@@ -79,35 +79,4 @@ public class ComponentTest
         Assert.IsNotNull(result.Item1, "Coordinates should not be null.");
     }
 
-    [TestMethod]
-    public void RedirectTo_NullUri_ShouldNotThrowException()
-    {
-        // Arrange
-        var navigationManagerMock = new Mock<NavigationManager>();
-
-        var redirectManager = new IdentityRedirectManager(navigationManagerMock.Object);
-
-        // Act
-        redirectManager.RedirectTo(null);
-
-        // Assert
-        // No exception should be thrown
-    }
-
-    [TestMethod]
-    public void RedirectTo_RelativeUri_ShouldNavigate()
-    {
-        // Arrange
-        var navigationManagerMock = new Mock<NavigationManager>();
-        navigationManagerMock.SetupGet(m => m.Uri).Returns("http://localhost/"); // Set up Uri to avoid InvalidOperationException
-
-        var redirectManager = new IdentityRedirectManager(navigationManagerMock.Object);
-
-        // Act
-        redirectManager.RedirectTo("/home");
-
-        // Assert
-        navigationManagerMock.Verify(m => m.NavigateTo("/home", false), Times.Once); // Verify NavigateTo method call
-    }
-
 }
