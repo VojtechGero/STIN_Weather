@@ -52,6 +52,17 @@ public static class WeatherUtils
         return (data, dates);
     }
 
+    public static List<SavedLocation> removeLocation(int id,List<SavedLocation> locations)
+    {
+        if(id > locations.Count) return locations;
+        locations.RemoveAt(id - 1);
+        for (int i = id - 1; i < locations.Count; i++)
+        {
+            locations[i].id = i + 1;
+        }
+        
+        return locations;
+    }
     public static (Coordinates,int,bool) ShowWeatherTable(Coordinates coords,bool useHistoric)
     {
         int historic;

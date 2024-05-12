@@ -123,14 +123,8 @@
     }
     private async Task RemoveLocation(int id)
     {
-        locations.RemoveAt(id - 1);
-        for (int i = id-1; i < locations.Count; i++)
-        {
-            locations[i].id = i+1;
-        }
-        user.savedLocations = locations;
-        var cancellationToken = new CancellationToken();
-        users.UpdateAsync(user, cancellationToken);
+        user.savedLocations = locations = WeatherUtils.removeLocation(id,locations);
+        users.UpdateAsync(user, new CancellationToken());
     }
     private async Task ShowLocation(Coordinates coords)
     {
