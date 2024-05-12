@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
 
 using Moq;
-
+using STIN_Weather.Components.Account;
 using STIN_Weather.Data;
 using STIN_Weather.WeatherReportUtils;
 
@@ -77,4 +78,36 @@ public class ComponentTest
         Assert.AreEqual(true, result.Item3, "The boolean return should always be true.");
         Assert.IsNotNull(result.Item1, "Coordinates should not be null.");
     }
+
+    [TestMethod]
+    public void RedirectTo_NullUri_ShouldNotThrowException()
+    {
+        // Arrange
+        var navigationManagerMock = new Mock<NavigationManager>();
+
+        var redirectManager = new IdentityRedirectManager(navigationManagerMock.Object);
+
+        // Act
+        redirectManager.RedirectTo(null);
+
+        // Assert
+        // No exception should be thrown
+    }
+
+    [TestMethod]
+    public void RedirectTo_RelativeUri_ShouldNavigate()
+    {
+        // Arrange
+        var navigationManagerMock = new Mock<NavigationManager>();
+        navigationManagerMock.SetupGet(m => m.Uri).Returns("http://localhost/"); // Set up Uri to avoid InvalidOperationException
+
+        var redirectManager = new IdentityRedirectManager(navigationManagerMock.Object);
+
+        // Act
+        redirectManager.RedirectTo("/home");
+
+        // Assert
+        navigationManagerMock.Verify(m => m.NavigateTo("/home", false), Times.Once); // Verify NavigateTo method call
+    }
+
 }
