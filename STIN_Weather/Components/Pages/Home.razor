@@ -58,15 +58,15 @@
 }
 
 @code{
-    bool historicData = false;
-    bool showWeather { get; set; } = false;
-    Coordinates OutgoingCoords { get; set; }
-    int historic = 0;
-    Coordinates Coords { get; set; }
+    public bool historicData { get; set; } = false;
+    public bool showWeather { get; set; } = false;
+    public Coordinates OutgoingCoords { get; set; }
+    public int historic = 0;
+    public Coordinates Coords { get; set; }
     ApplicationUser user;
-    List<SavedLocation> locations = new List<SavedLocation>();
+    public List<SavedLocation> locations = new List<SavedLocation>();
     MapView map;
-    string text = "";
+    public string text = "";
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();

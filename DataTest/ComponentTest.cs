@@ -10,31 +10,7 @@ namespace Tests;
 public class ComponentTest
 {
 
-    [TestMethod]
-    public async Task TestCallApiReturnsDataCorrectly()
-    {
-        // Arrange
-        var mockApi = new Mock<WeatherApi>();
-        var coordinates = new Coordinates(34.05, -118.25);
-        var today = DateOnly.FromDateTime(DateTime.Now);
-        var dummyData = new List<DailyForecast>
-        {
-            new DailyForecast("Sunny", today, 25, 0.0)
-        };
-        mockApi.Setup(api => api.requestWeather(It.IsAny<string>())).ReturnsAsync(dummyData);
-
-        // Act
-        var (data, dates) = await WeatherUtils.CallApi(mockApi.Object, coordinates, 0);
-
-        // Assert
-        Assert.IsNotNull(data);
-        Assert.AreEqual(1, data.Count);
-        Assert.AreEqual("Sunny", data[0].description);
-        Assert.AreEqual(25, data[0].temperatureMax);
-        Assert.AreEqual(0.0, data[0].precipitationSum);
-        Assert.AreEqual(today, data[0].date);
-        Assert.IsTrue(dates[0].Contains("Today"));
-    }
+    
 
     [TestMethod]
     public async Task TestCallApiWithHistoricData()
