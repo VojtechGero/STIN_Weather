@@ -22,9 +22,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build
+      #--settings settings.runsettings
     - name: Test
       run: |
-            dotnet test --collect: "XPlat Code Coverage" --settings settings.runsettings
+            dotnet test --collect: "XPlat Code Coverage" 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
