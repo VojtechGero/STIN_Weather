@@ -10,7 +10,7 @@
 
 
 <PageTitle>Home</PageTitle>
-<h1>Test</h1>
+<h1>Weather Report</h1>
 <h1>@user</h1>
 <div class="maplocs">
     <div>
@@ -94,8 +94,7 @@
         var newLocation = new SavedLocation(Coords, name, id);
         user.savedLocations.Add(newLocation);
         locations = user.savedLocations;
-        var cancellationToken = new CancellationToken();
-        users.UpdateAsync(user, cancellationToken);
+        users.UpdateAsync(user, new CancellationToken());
     }
     async Task OnCoordinatesCreated(Coordinates IncomingCoords)
     {

@@ -5,6 +5,27 @@ namespace Tests;
 [TestClass]
 public class MockLessTest
 {
+
+    [DataTestMethod]
+    [DataRow(190, -170)] // Positive value beyond 180
+    [DataRow(-190, 170)] // Negative value beyond -180
+    [DataRow(0, 0)] // Zero
+    [DataRow(180, 180)] // Positive maximum value
+    [DataRow(360, 0)] // Positive value equal to 360
+    [DataRow(-360, 0)] // Negative value equal to -360
+    [DataRow(540, 180)] // Positive value greater than 360
+    [DataRow(720, 0)] // Positive value greater than 360 and a multiple of 360
+    public void FormatLongitude_ShouldReturnCorrectValue(double input, double expected)
+    {
+        // Arrange
+
+        // Act
+        double result = Coordinates.FormatLongitude(input);
+
+        // Assert
+        Assert.AreEqual(expected, result,$"{expected} se nerovná {result}");
+    }
+
     [TestMethod]
     public void Constructor_ValidCoordinates_ShouldInitialize()
     {

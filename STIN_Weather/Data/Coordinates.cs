@@ -13,6 +13,21 @@ public class Coordinates
         this.Latitude = Latitude;
         this.Longitude = Longitude;
     }
+
+    public static double FormatLongitude(double value)
+    {
+        double normalizedValue = value % 360;
+        if (normalizedValue > 180)
+        {
+            normalizedValue -= 360;
+        }
+        else if (normalizedValue <= -180)
+        {
+            normalizedValue += 360;
+        }
+        return normalizedValue;
+    }
+
     private bool IsValidCoords(double longitude, double latitude)
     {
         if (longitude < -180 || longitude > 180)
