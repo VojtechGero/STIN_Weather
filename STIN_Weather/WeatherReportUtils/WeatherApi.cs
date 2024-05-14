@@ -29,8 +29,15 @@ public class WeatherApi
             {
                 DateOnly date = DateOnly.FromDateTime(DateTime.Parse(daily.time[i]));
                 string description = WeatherUtils.ParseCode(daily.weather_code[i]);
-                Forecast.Add(new DailyForecast(description, date,
-                    daily.temperature_2m_max[i], daily.precipitation_sum[i]));
+                string image = WeatherUtils.GetImage(daily.weather_code[i]);
+                Forecast.Add(new DailyForecast
+                {
+                    Description = description,
+                    Date = date,
+                    TemperatureMax = daily.temperature_2m_max[i],
+                    PrecipitationSum = daily.precipitation_sum[i],
+                    ImageLink = image
+                });
             }
             return Forecast;
         }

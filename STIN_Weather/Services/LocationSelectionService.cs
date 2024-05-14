@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis;
 using STIN_Weather.Data;
+using STIN_Weather.WeatherReportUtils;
 namespace STIN_Weather.Services;
 
 public class LocationSelectionService
 {
     List<SavedLocation> SavedLocations { get; set; }
     private readonly UserManager<ApplicationUser> UserManager;
+    private readonly WeatherApi api;
     
-    public LocationSelectionService(ApplicationUser user)
+    public LocationSelectionService(ApplicationUser user,WeatherApi api)
     {
         SavedLocations = user.savedLocations;
+        this.api= api;
     }
 
 
@@ -30,7 +33,7 @@ public class LocationSelectionService
         }
 
         var location = SavedLocations[id - 1];
-        var forecastService=new WeatherForecastService(location.latitude,location.longitude, historic);
+        var forecastService=new WeatherForecastService(api,location.latitude,location.longitude, historic);
         return await forecastService.GetForecastAsync();
 
     }
