@@ -107,13 +107,7 @@
     }
     void showWeatherClick()
     {
-        OutgoingCoords = Coords;
-        if (historicData)
-        {
-            historic = 7;
-        }
-        else historic = 0;
-        showWeather = true;
+        (OutgoingCoords, historic, showWeather) = WeatherUtils.ShowWeatherTable(Coords, historicData);
     }
     private async Task RemoveLocation(int id)
     {
