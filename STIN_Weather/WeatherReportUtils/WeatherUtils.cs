@@ -78,6 +78,8 @@ public static class WeatherUtils
         return (coords, historic,true);
     }
 
+    
+
     public static string ParseCode(int weatherCode)
     {
         return weatherCode switch
