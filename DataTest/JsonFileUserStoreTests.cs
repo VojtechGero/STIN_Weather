@@ -183,6 +183,44 @@ public class JsonFileUserStoreTests
         Assert.IsNotNull(updatedUser);
         Assert.AreEqual(newPasswordHash, updatedUser.PasswordHash);
     }
+    [TestMethod]
+    public async Task FindByEmail()
+    {
+        var query = "USER1@EXAMPLE.COM";
+        var badQuery = "slop";
+        var x=await _store.FindByEmailAsync( query, CancellationToken.None);
+        var y = await _store.FindByEmailAsync(badQuery, CancellationToken.None);
+        Assert.IsNotNull(x);
+        Assert.IsNull(y);
+    }
+
+    [TestMethod]
+    public async Task BadFileHandling()
+    {
+
+        var path = Path.GetTempFileName();
+
+        var tempStore = new JsonFileUserStore(path);
+
+        var newUser = new ApplicationUser { Id = "3", UserName = "user3" };
+        var before = File.ReadAllText(path);
+        await tempStore.CreateAsync(newUser, CancellationToken.None);
+        var after=File.ReadAllText(path);
+        var users = GetUsersFromJsonFile();
+        Assert.IsNotNull(users);
+        Assert.AreNotEqual(before, after);
+        tempStore.Dispose();
+        File.WriteAllText(path, "slop");
+        tempStore.CreateAsync(newUser, CancellationToken.None);
+        after = File.ReadAllText(path);
+        users = GetUsersFromJsonFile();
+        Assert.IsNotNull(users);
+        Assert.AreNotEqual(before, after);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
 
     [TestMethod]
     public async Task SetNormalizedUserNameAndEmailAsync_SetsValuesCorrectly()
@@ -222,7 +260,7 @@ public class JsonFileUserStoreTests
     public async Task RandomArgumentExceptionsTest()
     {
         var user = new ApplicationUser { Id = "9", UserName = "user9", NormalizedUserName = "USER9", Email = "user9@example.com", NormalizedEmail = "USER9@EXAMPLE.COM", PasswordHash = "hash9", EmailConfirmed = false };
-
+        Assert.ThrowsExceptionAsync<ArgumentException>(() => _store.UpdateAsync(user, CancellationToken.None));
         Assert.ThrowsExceptionAsync<ArgumentException>(() =>_store.SetEmailAsync(user,"",CancellationToken.None));
         Assert.ThrowsExceptionAsync<ArgumentException>(() => _store.SetNormalizedEmailAsync(user, "", CancellationToken.None));
         Assert.ThrowsExceptionAsync<ArgumentException>(() => _store.SetEmailConfirmedAsync(user, false, CancellationToken.None));
