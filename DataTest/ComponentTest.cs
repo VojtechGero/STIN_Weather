@@ -10,8 +10,31 @@ namespace Tests;
 [TestClass]
 public class ComponentTest
 {
+    [TestMethod]
+    public async Task APIIntegrationTest()
+    {
+        // Arrange
 
-    
+        var coordinates = new Coordinates(34.05, -118.25);
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var dummyData = new List<DailyForecast>
+        {
+            new DailyForecast
+            {
+                Description = "Rainy",
+                Date = today.AddDays(-1),
+                TemperatureMax = 22,
+                PrecipitationSum = 5.4
+            }
+        };
+        // Act
+        var (data, dates) = await WeatherUtils.CallApi(new WeatherApi(), coordinates, 1);
+
+        // Assert
+        Assert.IsNotNull(data);
+        Assert.IsNotNull(dates);
+    }
+
 
     [TestMethod]
     public async Task TestCallApiWithHistoricData()
