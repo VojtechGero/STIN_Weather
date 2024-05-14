@@ -168,6 +168,45 @@ public class MockLessTest
         Assert.AreEqual(0, result.Count);
     }
 
+    public void NewUniqueNameTest()
+    {
+        // Arrange
+        var location1 = new SavedLocation(new Coordinates(10.0, 20.0), "Location 1", 1);
+        var location2 = new SavedLocation(new Coordinates(30.0, 40.0), "Location 2", 2);
+        var location3 = new SavedLocation(new Coordinates(50.0, 60.0), "Location 3", 3);
+        var locations = new List<SavedLocation> { location1, location2, location3 };
+        string name = "Location 1";
+        string expected = "Location 1(1)";
+
+
+        // Act
+        string newName = WeatherUtils.GetUniqueName(name, locations);
+
+
+        // Assert
+        Assert.AreEqual(expected, newName);
+    }
+
+    [TestMethod]
+    public void NewUniqueNameTestFromEmpty()
+    {
+        // Arrange
+        var location1 = new SavedLocation(new Coordinates(10.0, 20.0), "Location 1", 1);
+        var location2 = new SavedLocation(new Coordinates(30.0, 40.0), "Location 2", 2);
+        var location3 = new SavedLocation(new Coordinates(50.0, 60.0), "Location 3", 3);
+        var locations = new List<SavedLocation> { location1, location2, location3 };
+        string name = "";
+        string expected = "New location";
+
+
+        // Act
+        string newName=WeatherUtils.GetUniqueName(name, locations);
+
+
+        // Assert
+        Assert.AreEqual(expected, newName);
+    }
+
     [TestMethod]
     public void RemoveLocation_MultipleItems_RemovesCorrectItem()
     {

@@ -9,6 +9,10 @@ public static class WeatherUtils
     public static string GetUniqueName(string name,List<SavedLocation> locations)
     {
         int d = 0;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "New location";
+        }
         var names=locations.Select(x => x.name).ToList();
         while (true)
         {

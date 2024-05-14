@@ -85,12 +85,7 @@
             user.savedLocations = new List<SavedLocation>();
         }
         int id = locations.Count + 1;
-        string name = text;
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            name = "New location";
-        }
-        name = WeatherUtils.GetUniqueName(name, locations);
+        string name = WeatherUtils.GetUniqueName(text, locations);
         var newLocation = new SavedLocation(Coords, name, id);
         user.savedLocations.Add(newLocation);
         locations = user.savedLocations;
