@@ -42,6 +42,44 @@ public class MockLessTest
         Assert.AreEqual(longitude, coords.Longitude);
     }
 
+    [DataTestMethod]
+    [DataRow(0, "http://openweathermap.org/img/wn/01d@2x.png")]
+    [DataRow(1, "http://openweathermap.org/img/wn/01d@2x.png")]
+    [DataRow(2, "http://openweathermap.org/img/wn/02d@2x.png")]
+    [DataRow(3, "http://openweathermap.org/img/wn/03d@2x.png")]
+    [DataRow(45, "http://openweathermap.org/img/wn/50d@2x.png")]
+    [DataRow(48, "http://openweathermap.org/img/wn/50d@2x.png")]
+    [DataRow(51, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(53, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(55, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(56, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(57, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(61, "http://openweathermap.org/img/wn/10d@2x.png")]
+    [DataRow(63, "http://openweathermap.org/img/wn/10d@2x.png")]
+    [DataRow(65, "http://openweathermap.org/img/wn/10d@2x.png")]
+    [DataRow(66, "http://openweathermap.org/img/wn/10d@2x.png")]
+    [DataRow(67, "http://openweathermap.org/img/wn/10d@2x.png")]
+    [DataRow(71, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(73, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(75, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(77, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(80, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(81, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(82, "http://openweathermap.org/img/wn/09d@2x.png")]
+    [DataRow(85, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(86, "http://openweathermap.org/img/wn/13d@2x.png")]
+    [DataRow(95, "http://openweathermap.org/img/wn/11d@2x.png")]
+    [DataRow(96, "http://openweathermap.org/img/wn/11d@2x.png")]
+    [DataRow(99, "http://openweathermap.org/img/wn/11d@2x.png")]
+    public void GetImage_ReturnsCorrectUrl(int weatherCode, string expectedUrl)
+    {
+        // Arrange
+        var actualUrl = WeatherUtils.GetImage(weatherCode);
+
+        // Assert
+        Assert.AreEqual(expectedUrl, actualUrl);
+    }
+
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Constructor_InvalidLatitude_ShouldThrowArgumentOutOfRangeException()

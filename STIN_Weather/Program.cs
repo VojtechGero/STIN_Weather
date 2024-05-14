@@ -4,6 +4,7 @@ using STIN_Weather.Components;
 using STIN_Weather.Components.Account;
 using STIN_Weather.Data;
 using STIN_Weather.Services;
+using STIN_Weather.WeatherReportUtils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<JsonFileUserStore>();
+builder.Services.AddScoped<WeatherApi>();
 
 builder.Services.AddAuthentication(options =>
 {

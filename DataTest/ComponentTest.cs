@@ -23,7 +23,13 @@ public class ComponentTest
         var today = DateOnly.FromDateTime(DateTime.Now);
         var dummyData = new List<DailyForecast>
         {
-            new DailyForecast("Rainy", today.AddDays(-1), 22, 5.4)
+            new DailyForecast
+            {
+                Description = "Rainy",
+                Date = today.AddDays(-1),
+                TemperatureMax = 22,
+                PrecipitationSum = 5.4
+            }
         };
         mockApi.Setup(api => api.requestWeather(It.IsAny<string>())).ReturnsAsync(dummyData);
 
@@ -32,10 +38,10 @@ public class ComponentTest
 
         // Assert
         Assert.AreEqual(1, data.Count);
-        Assert.AreEqual("Rainy", data[0].description);
-        Assert.AreEqual(22, data[0].temperatureMax);
-        Assert.AreEqual(5.4, data[0].precipitationSum);
-        Assert.AreEqual(today.AddDays(-1), data[0].date);
+        Assert.AreEqual("Rainy", data[0].Description);
+        Assert.AreEqual(22, data[0].TemperatureMax);
+        Assert.AreEqual(5.4, data[0].PrecipitationSum);
+        Assert.AreEqual(today.AddDays(-1), data[0].Date);
         Assert.IsFalse(dates[0].Contains("Today"));
     }
 

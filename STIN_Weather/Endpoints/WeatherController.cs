@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using STIN_Weather.Data;
 using STIN_Weather.Services;
 using System.Security.Claims;
+using STIN_Weather.WeatherReportUtils;
 
 namespace STIN_Weather.Endpoints;
 
@@ -13,10 +14,12 @@ namespace STIN_Weather.Endpoints;
 public class WeatherController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly WeatherApi api;
 
-    public WeatherController(UserManager<ApplicationUser> userManager)
+    public WeatherController(UserManager<ApplicationUser> userManager,WeatherApi api)
     {
         _userManager = userManager;
+        this.api = api;
     }
 
     // GET: forecast
@@ -27,7 +30,7 @@ public class WeatherController : ControllerBase
         try
         {
             var applicationUser = await _userManager.FindByIdAsync(userId);
-            var _LocationSelectionService = new LocationSelectionService(applicationUser);
+            var _LocationSelectionService = new LocationSelectionService(applicationUser,api);
             string response = await _LocationSelectionService.FromId(id, historic);
             return Content(response);
         }

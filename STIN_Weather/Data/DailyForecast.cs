@@ -1,17 +1,14 @@
-﻿namespace STIN_Weather.Data;
+﻿using System.Text.Json.Serialization;
+
+namespace STIN_Weather.Data;
 
 public class DailyForecast
 {
-    public string description {get; set;}
-    public DateOnly date { get; set; }
-    public double temperatureMax { get; set; }
-    public double precipitationSum { get; set; }
+    public string Description {get; set;}
+    public DateOnly Date { get; set; }
+    public double TemperatureMax { get; set; }
+    public double PrecipitationSum { get; set; }
 
-    public DailyForecast(string description, DateOnly date, double temperatureMax, double precipitationSum)
-    {
-        this.description = description;
-        this.date = date;
-        this.temperatureMax = temperatureMax;
-        this.precipitationSum = precipitationSum;
-    }
+    [JsonIgnore]
+    public string ImageLink { get; set; }
 }

@@ -9,11 +9,11 @@ public class WeatherForecastService
     Coordinates coords;
     bool useHistoric;
     WeatherApi api;
-    public WeatherForecastService(double latitude,double longitude,bool useHistoric)
+    public WeatherForecastService(WeatherApi api,double latitude,double longitude,bool useHistoric)
     {
         this.coords=new Coordinates(latitude,longitude);
         this.useHistoric=useHistoric;
-        api = new WeatherApi();
+        this.api=api;
     }
 
     private string BuildRequest()

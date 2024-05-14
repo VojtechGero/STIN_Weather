@@ -1,5 +1,6 @@
 ﻿@using STIN_Weather.WeatherReportUtils
 @using STIN_Weather.Data
+@inject WeatherApi api;
 @if (data is not null)
 {
     <table class="table">
@@ -9,6 +10,7 @@
                 <th>Max Temp. (C)</th>
                 <th>Precipitation sum</th>
                 <th>Weather Code</th>
+                <th>Image</th>
             </tr>
         </thead>
         <tbody>
@@ -16,9 +18,10 @@
             {
                 <tr>
                     <td>@dates[i]</td>
-                    <td>@data[i].temperatureMax</td>
-                    <td>@data[i].precipitationSum</td>
-                    <td>@data[i].description</td>
+                    <td>@data[i].TemperatureMax</td>
+                    <td>@data[i].PrecipitationSum</td>
+                    <td>@data[i].Description</td>
+                    <td><img src="@data[i].ImageLink" /></td>
                 </tr>
             }
         </tbody>
@@ -37,17 +40,10 @@
     [Parameter]
     public int historic { get; set; } = 0;
     List<DailyForecast> data { get; set; }
-    WeatherApi api { get; set; }
     RequestBuilder builder;
     bool error = false;
     List<string> dates=new List<string>();
 
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        api = new WeatherApi();
-    }
     protected override async Task OnParametersSetAsync()
     {
         try
