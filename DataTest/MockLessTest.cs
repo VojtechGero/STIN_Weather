@@ -1,4 +1,5 @@
 using STIN_Weather.Data;
+using STIN_Weather.Data.OpenMeteoData;
 using STIN_Weather.WeatherReportUtils;
 namespace Tests;
 
@@ -186,6 +187,23 @@ public class MockLessTest
         // Assert
         Assert.AreEqual(expected, newName);
     }
+    [TestMethod]
+    public void dailyUnitsTest()
+    {
+        // Arrange
+        var units = new DailyUnits();
+        units.precipitation_sum = "1";
+        units.temperature_2m_max = "2";
+        units.time = "3";
+        units.weather_code = "4";
+
+        // Assert
+        Assert.AreEqual(units.weather_code, "4");
+        Assert.AreEqual(units.temperature_2m_max, "2");
+        Assert.AreEqual(units.time, "3");
+        Assert.AreEqual(units.precipitation_sum, "1");
+    }
+
 
     [TestMethod]
     public void NewUniqueNameTestFromEmpty()
