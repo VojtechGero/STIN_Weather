@@ -85,3 +85,7 @@ h1:focus {
     flex-direction: column;
     justify-content: center;
 }
+
+.image {
+    background-color: darkgrey;
+}
