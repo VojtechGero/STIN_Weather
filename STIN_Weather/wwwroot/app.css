@@ -68,9 +68,20 @@ h1:focus {
     display: flex;
     flex-wrap: wrap;
     flex-grow: 0;
+    flex-shrink:1;
     gap: 5px;
     justify-content: flex-start;
 }
+.map {
+    width: auto;
+    max-height: 100%;
+}
+.map mapview{
+  height: 100%;
+  width: 100%;
+}
+
+
 .controls {
     display: flex;
     flex-wrap: wrap;
